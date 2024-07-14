@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col col-content pt-0">
+  <!-- Display Platfrom -->
+  <div class="row px-3 py-1" style="margin-top:20px;">
+    <h3>{{ cur_platform }} Games</h3>
+    <hr/>
+    {% for game in games %}
+    <div class="col-sm-3 mb-3 mb-sm-0 py-3">
+
+      <!-- Cards for games -->
+      <div class="card shadow" style="height: 480px;">
+        <img src="static/covers/{{ game.game_name }}.jpg" class="card-img-top" alt="{{ game.game_name }}"
+             style="max-height:290px;">
+        <div class="card-body">
+          <p class="card-title fw-bolder" style="font-size: 1rem;"><a
+            class="link-light stretched-link text-decoration-none"
+            href="/game/{{ game.game_id }}">{{
+            game.game_name }}</a></p>
+          <p class="card-text fw-semibold" style="font-size:12px">{{ game.details | truncate_text }}</p>
+        </div>
+        <div class="card-footer" style="height: 45px;">
+          <ul class="list-inline">
+            {% if logged_in and game_in_library(game.game_id) %}
+            <li class="list-inline-item">In Library</li>
+            {% elif (game.games_count==0) %}
+            <li class="list-inline-item">Sold Out</li>
+            {% else %}
+            <li class="ps-2 list-inline-item">${{ game.price }}</li>
+            {% endif %}
+            <li class="list-inline-item ps-5"><p class="link-light text-decoration-none">View Game</p></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

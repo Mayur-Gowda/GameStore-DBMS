@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col col-content pt-0">
+  <!-- Display Platfrom -->
+  <div class="row px-3" style="margin-top:40px;">
+    <a class="link-dark text-decoration-none" href="/home"><h1 class="pb-4">← &nbsp;<u>{{ game.game_name }}</u></h1></a>
+  </div>
+  <div class="row py-4">
+    <div class="col py-3 text-center border-dark border-end">
+      <img src="/static/covers/{{ game.game_name }}.jpg" class="card-img-top shadow-lg rounded"
+           alt="{{ game.game_name }}"
+           style="width:280px;">
+    </div>
+    <div class="col">
+      <p class="fw-bold lh-1 text-body-emphasis border-dark border-bottom pb-3" style="font-size: 31px;">{{ game.details
+        }}</p>
+      <ul class="list-inline border-dark border-bottom pb-3">
+        <li class="list-inline-item px-3"><span class="label fw-bold">Developer:</span> {{ game.developer }}</li>
+        <li class="list-inline-item px3"><span class="label fw-bold">Publisher:</span> {{ game.publisher }}</li>
+      </ul>
+      <ul class="list-inline border-dark border-bottom pb-3">
+        {% if not game_in_library(game.game_id) %}
+        <li class="list-inline-item px-4"><h5 class="display-6 fw-bold lh-1 text-body-emphasis py-2">${{ game.price
+          }}</h5></li>
+        {% elif (game.games_count==0) %}
+        <li class="list-inline-item">Sold Out</li>
+        {% else %}
+        <li class="list-inline-item px-4">In Library</li>
+        {% endif %}
+        <li class="list-inline-item px-5"><span class="label fw-bold">Platform:&nbsp;&nbsp;</span>
+          {% if game.platform == 'PC' %}
+          <i class="bi bi-pc-display fs-3"></i>
+          {% elif game.platform == 'PS5' %}
+          <i class="bi bi-playstation fs-3"></i>
+          {% elif game.platform == 'Xbox X' %}
+          <i class="bi bi-xbox fs-3"></i>
+          {% elif game.platform == 'Nintendo Switch' %}
+          <i class="bi bi-nintendo-switch fs-3"></i>
+          {% endif %}
+        </li>
+
+      </ul>
+
+      <div class="px-3">
+        {% if logged_in and not game_in_library(game.game_id) %}
+        <form action="{{ url_for('buyGame') }}" method="post">
+          <input type="hidden" value="{{ game.game_id }}" name="gameID">
+          <button class="btn btn-outline-dark">Buy Game</button>
+        </form>
+        {% elif (logged_in and game_in_library(game.game_id)) or (game.games_count==0) %}
+        <button class="btn btn-outline-dark disabled">Buy Game</button>
+        {% else %}
+        <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#loginModal"
+                data-bs-dismiss="modal">Buy Game
+        </button>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
